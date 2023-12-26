@@ -42,18 +42,12 @@ export const Default: Story = {
 
 export const Pinned: Story = {
   args: {
-    task: {
-      ...Default.args?.task,
-      state: 'TASK_PINNED',
-    },
+    task: { id: '1', title: 'Test Task', state: 'TASK_PINNED' },
   },
 };
 
 export const Archived: Story = {
   args: {
-    task: {
-      ...Default.args?.task,
-      state: 'TASK_ARCHIVED',
-    },
+    task: { id: '1', title: 'Test Task', state: 'TASK_ARCHIVED'},
   },
 };

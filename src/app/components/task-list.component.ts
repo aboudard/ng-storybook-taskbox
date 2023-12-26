@@ -42,7 +42,8 @@ export default class TaskListComponent {
 
  @Input()
  set tasks(arr: Task[]) {
-   const initialTasks = [
+  this.tasksInOrder = [...arr].sort((a, b) => b.state.localeCompare(a.state));
+   /* const initialTasks = [
      ...arr.filter(t => t.state === 'TASK_PINNED'),
      ...arr.filter(t => t.state !== 'TASK_PINNED'),
    ];
@@ -51,7 +52,7 @@ export default class TaskListComponent {
    );
    this.tasksInOrder = filteredTasks.filter(
      t => t.state === 'TASK_INBOX' || t.state === 'TASK_PINNED'
-   );
+   ); */
  }
 
   /** Checks if it's in loading state */

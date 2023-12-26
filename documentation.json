@@ -2,20 +2,44 @@
     "pipes": [],
     "interfaces": [
         {
+            "name": "AppState",
+            "id": "interface-AppState-a8fb92877430f578314e91f0e485ce4cf17be652a244d0c1259a31c9a5c20eb3b7db825e5c6f813a5de6a27cc69b6fa911ed3c4e31b5e20c8a9ea2e3b722f5c1",
+            "file": "src/app/reducers/index.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { isDevMode } from '@angular/core';\nimport {\n  ActionReducer,\n  ActionReducerMap,\n  createFeatureSelector,\n  createSelector,\n  MetaReducer\n} from '@ngrx/store';\nimport * as fromTasks from './tasks.reducer';\n\n\nexport interface AppState {\n  task: fromTasks.TaskState;\n}\n\nexport const reducers: ActionReducerMap<AppState> = {\n  task: fromTasks.reducer,\n};\n\n\nexport const metaReducers: MetaReducer<AppState>[] = isDevMode() ? [] : [];\n",
+            "properties": [
+                {
+                    "name": "task",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "fromTasks.TaskState",
+                    "optional": false,
+                    "description": "",
+                    "line": 13
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
             "name": "Task",
-            "id": "interface-Task-8ff60bd7d3ecbb5aa8efccc7fb6337f67dfc955c373dbddc9acacb8b849212756c7f7013057b1fbb90340c0e854017c622fc799af461c332cf1ce3be183dff9e",
+            "id": "interface-Task-791960f06f20b9e3de798bf2721a8c31423cae8ba03e769f3fab341a513f23629aac68fe3d759263ae2765d50cb5118a32c34222ea0695d08cd819f0255e81b9",
             "file": "src/app/models/task.ts",
             "deprecated": false,
             "deprecationMessage": "",
             "type": "interface",
-            "sourceCode": "export interface Task {\r\n    id?: string;\r\n    title?: string;\r\n    state?: string;\r\n  }",
+            "sourceCode": "export interface Task {\r\n    id: string;\r\n    title: string;\r\n    state: string;\r\n  }",
             "properties": [
                 {
                     "name": "id",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "string",
-                    "optional": true,
+                    "optional": false,
                     "description": "",
                     "line": 2
                 },
@@ -24,7 +48,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "string",
-                    "optional": true,
+                    "optional": false,
                     "description": "",
                     "line": 4
                 },
@@ -33,9 +57,33 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "string",
-                    "optional": true,
+                    "optional": false,
                     "description": "",
                     "line": 3
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "TaskState",
+            "id": "interface-TaskState-8810bed6f940b41fa33c7f77c18582a0c8eba73af1e45efc63f568f9a8b8f1551067f3db012898bdafa037fdcff1afe1295e09c688eb83563e79a8d75eb8c610",
+            "file": "src/app/reducers/tasks.reducer.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { Action, createReducer, on } from '@ngrx/store';\nimport { Task } from '../models/task';\nimport { TasksActions } from './actions/tasks.actions';\n\nexport const tasksFeatureKey = 'task';\n\nexport interface TaskState {\n  taskList: Task[];\n}\n\nexport const initialState: TaskState = {\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n};\n\nexport const taskReducer = createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n);\n\nexport function reducer(state: TaskState | undefined, action: Action) {\n  return taskReducer(state, action);\n}\n",
+            "properties": [
+                {
+                    "name": "taskList",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Task[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 8
                 }
             ],
             "indexSignatures": [],
@@ -65,7 +113,7 @@
     "components": [
         {
             "name": "AppComponent",
-            "id": "component-AppComponent-932cdb81f7473731bcd6620c951db453f34335921fc8d86d21cf94fe04f1620008fa265cc4d2f5e7d9837f7080ac4c8c6037e22a394f78be3b54ba909289b08d",
+            "id": "component-AppComponent-2febad99aec6464dca62e4758c318ea5c0c15766eff28cf1be0a1f81feb594dfea9e6e21f4c64d81b18292cf3423be01ddeb85a483aef484958ad5b94f5c2dad",
             "file": "src/app/app.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -86,6 +134,16 @@
             "outputsClass": [],
             "propertiesClass": [
                 {
+                    "name": "store",
+                    "defaultValue": "inject(Store)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 15
+                },
+                {
                     "name": "tasks",
                     "defaultValue": "[\n    { state: 'TASK_INBOX', id: '1', title: 'Michael Jackson tour' },\n    { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },\n  ]",
                     "deprecated": false,
@@ -93,7 +151,17 @@
                     "type": "Task[]",
                     "optional": false,
                     "description": "",
-                    "line": 11
+                    "line": 20
+                },
+                {
+                    "name": "tasks$",
+                    "defaultValue": "this.store.select(selectTasks)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 16
                 },
                 {
                     "name": "title",
@@ -103,10 +171,81 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 10
+                    "line": 19
                 }
             ],
-            "methodsClass": [],
+            "methodsClass": [
+                {
+                    "name": "archive",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 25,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "archiveTask",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 33,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nComponent method to trigger the archiveTask event\n",
+                    "description": "<p>Component method to trigger the archiveTask event</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "pinTask",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 40,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nComponent method to trigger the pinTask event\n",
+                    "description": "<p>Component method to trigger the pinTask event</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
             "deprecated": false,
             "deprecationMessage": "",
             "hostBindings": [],
@@ -116,7 +255,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component } from '@angular/core';\nimport { Task } from './models/task';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.css'],\n})\nexport class AppComponent {\n  title = 'taskbox';\n  tasks: Task[] = [\n    { state: 'TASK_INBOX', id: '1', title: 'Michael Jackson tour' },\n    { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },\n  ]\n}\n",
+            "sourceCode": "import { Component, inject } from '@angular/core';\nimport { Task } from './models/task';\nimport { Store } from '@ngrx/store';\nimport { TasksActions } from './reducers/actions/tasks.actions';\nimport { selectTasks } from './reducers/selectors/task.selectors';\nimport { AppState } from './reducers';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.css'],\n})\nexport class AppComponent {\n\n  store = inject(Store);\n  tasks$ = this.store.select(selectTasks);\n  \n  \n  title = 'taskbox';\n  tasks: Task[] = [\n    { state: 'TASK_INBOX', id: '1', title: 'Michael Jackson tour' },\n    { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },\n  ]\n\n  archive() {\n    this.store.dispatch(TasksActions.archiveTask({ id: '1' }));\n  }\n\n\n  /**\n   * Component method to trigger the archiveTask event\n   */\n  archiveTask(id: string) {\n    this.store.dispatch(TasksActions.archiveTask({ id }));\n  }\n\n  /**\n   * Component method to trigger the pinTask event\n   */\n  pinTask(id: string) {\n    this.store.dispatch(TasksActions.pinTask({ id }));\n  }\n\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -126,7 +265,7 @@
             ],
             "stylesData": "",
             "extends": [],
-            "templateData": "<h1>{{title}}</h1>\r\n<app-task-list [tasks]=\"tasks\"></app-task-list>"
+            "templateData": "<h1>{{title}}</h1>\r\n<app-task-list (onArchiveTask)=\"archiveTask($event)\" (onPinTask)=\"pinTask($event)\" [tasks]=\"tasks$ | async\"></app-task-list>\r\n<button (click)=\"archive()\">archive</button>"
         },
         {
             "name": "ButtonComponent",
@@ -424,7 +563,7 @@
         },
         {
             "name": "TaskComponent",
-            "id": "component-TaskComponent-e54b2c5293425aa98d3d373b9bd44de9208dc4fa280fbb232b2882785b18bcaf07abecff28017c99883bdd7171947a4ac367e7cd5a2d903eaa53eaed5a28ed9a",
+            "id": "component-TaskComponent-b033da4510a39d8d0effe8c96df18d917bd48df9a807fa5fa7d50f24be395d8b7c6ad44d0eb9c56bc951d75ede56ebfd3a40a778d3495e1211914d83867e3700",
             "file": "src/app/components/task.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -479,7 +618,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task',\r\n  template: `\r\n    <div class=\"list-item {{ task?.state }}\">\r\n      <label\r\n        [attr.aria-label]=\"'archiveTask-' + task?.id\"\r\n        for=\"checked-{{ task?.id }}\"\r\n        class=\"checkbox\"\r\n      >\r\n        <input\r\n          type=\"checkbox\"\r\n          disabled=\"true\"\r\n          [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\r\n          name=\"checked-{{ task?.id }}\"\r\n          id=\"checked-{{ task?.id }}\"\r\n        />\r\n        <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\r\n      </label>\r\n      <label\r\n        [attr.aria-label]=\"task?.title + ''\"\r\n        for=\"title-{{ task?.id }}\"\r\n        class=\"title\"\r\n      >\r\n        <input\r\n          type=\"text\"\r\n          [value]=\"task?.title\"\r\n          readonly=\"true\"\r\n          id=\"title-{{ task?.id }}\"\r\n          name=\"title-{{ task?.id }}\"\r\n          placeholder=\"Input title\"\r\n        />\r\n      </label>\r\n      <button\r\n        *ngIf=\"task?.state !== 'TASK_ARCHIVED'\"\r\n        class=\"pin-button\"\r\n        [attr.aria-label]=\"'pinTask-' + task?.id\"\r\n        (click)=\"onPin(task?.id)\"\r\n      >\r\n        <span class=\"icon-star\"></span>\r\n      </button>\r\n    </div>\r\n  `,\r\n})\r\nexport default class TaskComponent {\r\n  /**\r\n   * The shape of the task object\r\n  */\r\n  @Input() task?: Task;\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onPin event\r\n   * @param id string\r\n   */\r\n  onPin(id: any) {\r\n    this.onPinTask.emit(id);\r\n  }\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onArchive event\r\n   * @param id string\r\n   */\r\n  onArchive(id: any) {\r\n    this.onArchiveTask.emit(id);\r\n  }\r\n}",
+            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task',\r\n  template: `\r\n    <div class=\"list-item {{ task?.state }}\">\r\n      <label\r\n        [attr.aria-label]=\"'archiveTask-' + task?.id\"\r\n        for=\"checked-{{ task?.id }}\"\r\n        class=\"checkbox\"\r\n      >\r\n        <input\r\n          type=\"checkbox\"\r\n          disabled=\"true\"\r\n          [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\r\n          name=\"checked-{{ task?.id }}\"\r\n          id=\"checked-{{ task?.id }}\"\r\n        />\r\n        <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\r\n      </label>\r\n      <label\r\n        [attr.aria-label]=\"task?.title + ''\"\r\n        for=\"title-{{ task?.id }}\"\r\n        class=\"title\"\r\n      >\r\n        <input\r\n          type=\"text\"\r\n          [value]=\"task?.title\"\r\n          readonly=\"true\"\r\n          id=\"title-{{ task?.id }}\"\r\n          name=\"title-{{ task?.id }}\"\r\n          placeholder=\"Input title\"\r\n        />\r\n      </label>\r\n      <button\r\n        *ngIf=\"task?.state !== 'TASK_ARCHIVED'\"\r\n        class=\"pin-button\"\r\n        [attr.aria-label]=\"'pinTask-' + task?.id\"\r\n        (click)=\"onPin(task?.id)\"\r\n      >\r\n        <span class=\"icon-star\"></span>\r\n      </button>\r\n    </div>\r\n  `,\r\n})\r\nexport default class TaskComponent {\r\n  /**\r\n   * The shape of the task object\r\n  */\r\n  @Input() task?: Task;\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onPin event\r\n   * @param id string\r\n   */\r\n  onPin(id: any) {\r\n    this.onPinTask.emit(id);\r\n    console.log('onPinTask', id);\r\n  }\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onArchive event\r\n   * @param id string\r\n   */\r\n  onArchive(id: any) {\r\n    this.onArchiveTask.emit(id);\r\n    console.log('onArchiveTask', id);\r\n  }\r\n}",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": "",
@@ -597,13 +736,13 @@
     "modules": [
         {
             "name": "AppModule",
-            "id": "module-AppModule-5358f66971be0d3642215c2f57af2d795d4edb27521bb522346819643de177f98ef44235983219e252073fdcf72f28eab425d12a88448687eb513affe8c13efd",
+            "id": "module-AppModule-1daf9ac6219d2700166e82bc82a670874531b9f9cb07e8657b7ca7990bb730d40fac9ad53c4ebb7d17dd1d124ca9d4f84d40321cf9d1adb92efafce54da1abce",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/app.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport TaskComponent from './components/task.component';\nimport TaskListComponent from './components/task-list.component';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TaskComponent,\n    TaskListComponent\n  ],\n  imports: [\n    BrowserModule\n  ],\n  providers: [],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
+            "sourceCode": "import { NgModule, isDevMode } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport TaskComponent from './components/task.component';\nimport TaskListComponent from './components/task-list.component';\nimport { StoreModule } from '@ngrx/store';\nimport { reducers, metaReducers } from './reducers';\nimport { StoreDevtoolsModule } from '@ngrx/store-devtools';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TaskComponent,\n    TaskListComponent\n  ],\n  imports: [\n    BrowserModule,\n    StoreModule.forRoot(reducers, { metaReducers }),\n    StoreDevtoolsModule.instrument({\n      maxAge: 25,\n      logOnly: isDevMode()\n    })\n  ],\n  providers: [],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -666,7 +805,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
-                "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      ...Default.args?.task,\r\n      state: 'TASK_ARCHIVED',\r\n    },\r\n  },\r\n}"
+                "defaultValue": "{\r\n  args: {\r\n    task: { id: '1', title: 'Test Task', state: 'TASK_ARCHIVED'},\r\n  },\r\n}"
             },
             {
                 "name": "Default",
@@ -676,7 +815,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
-                "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { ...TaskStories.Default.args?.task, id: '1', title: 'Task 1' },\r\n      { ...TaskStories.Default.args?.task, id: '2', title: 'Task 2' },\r\n      { ...TaskStories.Default.args?.task, id: '3', title: 'Task 3' },\r\n      { ...TaskStories.Default.args?.task, id: '4', title: 'Task 4' },\r\n      { ...TaskStories.Default.args?.task, id: '5', title: 'Task 5' },\r\n      { ...TaskStories.Default.args?.task, id: '6', title: 'Task 6' },\r\n    ],\r\n  },\r\n}"
+                "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' }\r\n    ],\r\n  },\r\n}"
             },
             {
                 "name": "Default",
@@ -717,6 +856,16 @@
                 "deprecationMessage": "",
                 "type": "object",
                 "defaultValue": "{\n  production: false,\n}"
+            },
+            {
+                "name": "initialState",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/tasks.reducer.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "TaskState",
+                "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n}"
             },
             {
                 "name": "Large",
@@ -829,6 +978,16 @@
                 "defaultValue": "{\r\n  title: 'Task',\r\n  component: TaskComponent,\r\n  excludeStories: /.*Data$/,\r\n  tags: ['autodocs'],\r\n  render: (args: TaskComponent) => ({\r\n    props: {\r\n      ...args,\r\n      onPinTask: actionsData.onPinTask,\r\n      onArchiveTask: actionsData.onArchiveTask,\r\n    },\r\n    template: `<app-task ${argsToTemplate(args)}></app-task>`,\r\n  }),\r\n}"
             },
             {
+                "name": "metaReducers",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/index.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "MetaReducer[]",
+                "defaultValue": "isDevMode() ? [] : []"
+            },
+            {
                 "name": "Pinned",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -836,7 +995,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
-                "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      ...Default.args?.task,\r\n      state: 'TASK_PINNED',\r\n    },\r\n  },\r\n}"
+                "defaultValue": "{\r\n  args: {\r\n    task: { id: '1', title: 'Test Task', state: 'TASK_PINNED' },\r\n  },\r\n}"
             },
             {
                 "name": "preview",
@@ -859,6 +1018,16 @@
                 "defaultValue": "{\n  args: {\n    primary: true,\n    label: 'Button',\n  },\n}"
             },
             {
+                "name": "reducers",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/index.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "ActionReducerMap<AppState>",
+                "defaultValue": "{\n  task: fromTasks.reducer,\n}"
+            },
+            {
                 "name": "Secondary",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -867,6 +1036,26 @@
                 "deprecationMessage": "",
                 "type": "Story",
                 "defaultValue": "{\n  args: {\n    label: 'Button',\n  },\n}"
+            },
+            {
+                "name": "selectTasks",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/selectors/task.selectors.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "createSelector(\n  selectTaskState,\n  (state: TaskState) => state.taskList\n)"
+            },
+            {
+                "name": "selectTaskState",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/selectors/task.selectors.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "(state: AppState) => state.task"
             },
             {
                 "name": "Small",
@@ -879,6 +1068,36 @@
                 "defaultValue": "{\n  args: {\n    size: 'small',\n    label: 'Button',\n  },\n}"
             },
             {
+                "name": "taskReducer",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/tasks.reducer.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n)"
+            },
+            {
+                "name": "TasksActions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/actions/tasks.actions.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>()\n  }\n})"
+            },
+            {
+                "name": "tasksFeatureKey",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/tasks.reducer.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "string",
+                "defaultValue": "'task'"
+            },
+            {
                 "name": "WithPinnedTasks",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -889,7 +1108,49 @@
                 "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      // Shaping the stories through args composition.\r\n      // Inherited data coming from the Default story.\r\n      ...(Default.args?.tasks?.slice(0, 5) || []),\r\n      { id: '6', title: 'Task 6 (pinned)', state: 'TASK_PINNED' },\r\n    ],\r\n  },\r\n}"
             }
         ],
-        "functions": [],
+        "functions": [
+            {
+                "name": "reducer",
+                "file": "src/app/reducers/tasks.reducer.ts",
+                "ctype": "miscellaneous",
+                "subtype": "function",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "args": [
+                    {
+                        "name": "state",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "action",
+                        "type": "Action",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "jsdoctags": [
+                    {
+                        "name": "state",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "type": "Action",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            }
+        ],
         "typealiases": [
             {
                 "name": "Story",
@@ -968,7 +1229,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
-                    "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      ...Default.args?.task,\r\n      state: 'TASK_ARCHIVED',\r\n    },\r\n  },\r\n}"
+                    "defaultValue": "{\r\n  args: {\r\n    task: { id: '1', title: 'Test Task', state: 'TASK_ARCHIVED'},\r\n  },\r\n}"
                 },
                 {
                     "name": "Default",
@@ -998,7 +1259,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
-                    "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      ...Default.args?.task,\r\n      state: 'TASK_PINNED',\r\n    },\r\n  },\r\n}"
+                    "defaultValue": "{\r\n  args: {\r\n    task: { id: '1', title: 'Test Task', state: 'TASK_PINNED' },\r\n  },\r\n}"
                 }
             ],
             "src/app/components/task-list.stories.ts": [
@@ -1010,7 +1271,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
-                    "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { ...TaskStories.Default.args?.task, id: '1', title: 'Task 1' },\r\n      { ...TaskStories.Default.args?.task, id: '2', title: 'Task 2' },\r\n      { ...TaskStories.Default.args?.task, id: '3', title: 'Task 3' },\r\n      { ...TaskStories.Default.args?.task, id: '4', title: 'Task 4' },\r\n      { ...TaskStories.Default.args?.task, id: '5', title: 'Task 5' },\r\n      { ...TaskStories.Default.args?.task, id: '6', title: 'Task 6' },\r\n    ],\r\n  },\r\n}"
+                    "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' }\r\n    ],\r\n  },\r\n}"
                 },
                 {
                     "name": "Empty",
@@ -1075,6 +1336,38 @@
                     "deprecationMessage": "",
                     "type": "object",
                     "defaultValue": "{\n  production: false,\n}"
+                }
+            ],
+            "src/app/reducers/tasks.reducer.ts": [
+                {
+                    "name": "initialState",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/tasks.reducer.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "TaskState",
+                    "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n}"
+                },
+                {
+                    "name": "taskReducer",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/tasks.reducer.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n)"
+                },
+                {
+                    "name": "tasksFeatureKey",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/tasks.reducer.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "defaultValue": "'task'"
                 }
             ],
             "src/stories/Button.stories.ts": [
@@ -1193,6 +1486,28 @@
                     "defaultValue": "{\n  title: 'Example/Page',\n  component: Page,\n  parameters: {\n    // More on how to position stories at: https://storybook.js.org/docs/angular/configure/story-layout\n    layout: 'fullscreen',\n  },\n  decorators: [\n    moduleMetadata({\n      declarations: [Button, Header],\n      imports: [CommonModule],\n    }),\n  ],\n}"
                 }
             ],
+            "src/app/reducers/index.ts": [
+                {
+                    "name": "metaReducers",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/index.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "MetaReducer[]",
+                    "defaultValue": "isDevMode() ? [] : []"
+                },
+                {
+                    "name": "reducers",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/index.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ActionReducerMap<AppState>",
+                    "defaultValue": "{\n  task: fromTasks.reducer,\n}"
+                }
+            ],
             ".storybook/preview.ts": [
                 {
                     "name": "preview",
@@ -1204,9 +1519,87 @@
                     "type": "Preview",
                     "defaultValue": "{\n  parameters: {\n    actions: { argTypesRegex: \"^on[A-Z].*\" },\n    controls: {\n      matchers: {\n        color: /(background|color)$/i,\n        date: /Date$/,\n      },\n    },\n  },\n}"
                 }
+            ],
+            "src/app/reducers/selectors/task.selectors.ts": [
+                {
+                    "name": "selectTasks",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/selectors/task.selectors.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "createSelector(\n  selectTaskState,\n  (state: TaskState) => state.taskList\n)"
+                },
+                {
+                    "name": "selectTaskState",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/selectors/task.selectors.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "(state: AppState) => state.task"
+                }
+            ],
+            "src/app/reducers/actions/tasks.actions.ts": [
+                {
+                    "name": "TasksActions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/actions/tasks.actions.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>()\n  }\n})"
+                }
             ]
         },
-        "groupedFunctions": {},
+        "groupedFunctions": {
+            "src/app/reducers/tasks.reducer.ts": [
+                {
+                    "name": "reducer",
+                    "file": "src/app/reducers/tasks.reducer.ts",
+                    "ctype": "miscellaneous",
+                    "subtype": "function",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "state",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "action",
+                            "type": "Action",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "state",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "action",
+                            "type": "Action",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         "groupedEnumerations": {},
         "groupedTypeAliases": {
             "src/stories/Button.stories.ts": [
@@ -1278,7 +1671,7 @@
     },
     "routes": [],
     "coverage": {
-        "count": 5,
+        "count": 4,
         "status": "low",
         "files": [
             {
@@ -1296,8 +1689,8 @@
                 "type": "component",
                 "linktype": "component",
                 "name": "AppComponent",
-                "coveragePercent": 0,
-                "coverageCount": "0/3",
+                "coveragePercent": 25,
+                "coverageCount": "2/8",
                 "status": "low"
             },
             {
@@ -1425,6 +1818,114 @@
                 "name": "Task",
                 "coveragePercent": 0,
                 "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/actions/tasks.actions.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "TasksActions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/index.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "AppState",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/index.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "metaReducers",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/index.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "reducers",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/selectors/task.selectors.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "selectTasks",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/selectors/task.selectors.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "selectTaskState",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/tasks.reducer.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "TaskState",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/tasks.reducer.ts",
+                "type": "function",
+                "linktype": "miscellaneous",
+                "linksubtype": "function",
+                "name": "reducer",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/tasks.reducer.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "initialState",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/tasks.reducer.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "taskReducer",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/tasks.reducer.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "tasksFeatureKey",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
                 "status": "low"
             },
             {

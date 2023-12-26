@@ -66,6 +66,7 @@ export default class TaskComponent {
    */
   onPin(id: any) {
     this.onPinTask.emit(id);
+    console.log('onPinTask', id);
   }
   /**
    * @ignore
@@ -74,5 +75,6 @@ export default class TaskComponent {
    */
   onArchive(id: any) {
     this.onArchiveTask.emit(id);
+    console.log('onArchiveTask', id);
   }
 }
