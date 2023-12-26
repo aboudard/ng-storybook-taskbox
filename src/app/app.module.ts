@@ -7,12 +7,14 @@ import TaskListComponent from './components/task-list.component';
 import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import InboxScreenComponent from './components/inbox-screen';
 
 @NgModule({
   declarations: [
     AppComponent,
     TaskComponent,
-    TaskListComponent
+    TaskListComponent,
+    InboxScreenComponent
   ],
   imports: [
     BrowserModule,

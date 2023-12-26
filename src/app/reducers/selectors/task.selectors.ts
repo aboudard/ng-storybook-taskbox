@@ -9,3 +9,8 @@ export const selectTasks = createSelector(
   selectTaskState,
   (state: TaskState) => state.taskList
 );
+
+export const selectError = createSelector(
+  selectTaskState,
+  (state: TaskState) => state.error
+);

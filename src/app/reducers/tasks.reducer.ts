@@ -6,6 +6,8 @@ export const tasksFeatureKey = 'task';
 
 export interface TaskState {
   taskList: Task[];
+  status: 'idle' | 'loading' | 'success' | 'error';
+  error: boolean;
 }
 
 export const initialState: TaskState = {
@@ -15,6 +17,8 @@ export const initialState: TaskState = {
     { id: '3', title: 'Something else', state: 'TASK_INBOX' },
     { id: '4', title: 'Something again', state: 'TASK_INBOX' },
   ],
+  status: 'idle',
+  error: false
 };
 
 export const taskReducer = createReducer(
@@ -24,7 +28,8 @@ export const taskReducer = createReducer(
   })),
   on(TasksActions.pinTask, (state, { id }) => ({
     ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)
-  }))
+  })),
+  on(TasksActions.setError, (state, { error }) => ({ ...state, error }))
 );
 
 export function reducer(state: TaskState | undefined, action: Action) {

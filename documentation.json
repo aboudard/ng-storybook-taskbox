@@ -69,13 +69,31 @@
         },
         {
             "name": "TaskState",
-            "id": "interface-TaskState-8810bed6f940b41fa33c7f77c18582a0c8eba73af1e45efc63f568f9a8b8f1551067f3db012898bdafa037fdcff1afe1295e09c688eb83563e79a8d75eb8c610",
+            "id": "interface-TaskState-d9de1806be9b4fb1695461f2c8b4009bd553c6b696a362ae9ca0f72c9522b5500312a4a6edea87a71b88c40a8677da5e0d5d37da087e309cb5d38360b1a9293b",
             "file": "src/app/reducers/tasks.reducer.ts",
             "deprecated": false,
             "deprecationMessage": "",
             "type": "interface",
-            "sourceCode": "import { Action, createReducer, on } from '@ngrx/store';\nimport { Task } from '../models/task';\nimport { TasksActions } from './actions/tasks.actions';\n\nexport const tasksFeatureKey = 'task';\n\nexport interface TaskState {\n  taskList: Task[];\n}\n\nexport const initialState: TaskState = {\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n};\n\nexport const taskReducer = createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n);\n\nexport function reducer(state: TaskState | undefined, action: Action) {\n  return taskReducer(state, action);\n}\n",
+            "sourceCode": "import { Action, createReducer, on } from '@ngrx/store';\nimport { Task } from '../models/task';\nimport { TasksActions } from './actions/tasks.actions';\n\nexport const tasksFeatureKey = 'task';\n\nexport interface TaskState {\n  taskList: Task[];\n  status: 'idle' | 'loading' | 'success' | 'error';\n  error: boolean;\n}\n\nexport const initialState: TaskState = {\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n  status: 'idle',\n  error: false\n};\n\nexport const taskReducer = createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  })),\n  on(TasksActions.setError, (state, { error }) => ({ ...state, error }))\n);\n\nexport function reducer(state: TaskState | undefined, action: Action) {\n  return taskReducer(state, action);\n}\n",
             "properties": [
+                {
+                    "name": "error",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                },
+                {
+                    "name": "status",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "\"idle\" | \"loading\" | \"success\" | \"error\"",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                },
                 {
                     "name": "taskList",
                     "deprecated": false,
@@ -113,7 +131,7 @@
     "components": [
         {
             "name": "AppComponent",
-            "id": "component-AppComponent-2febad99aec6464dca62e4758c318ea5c0c15766eff28cf1be0a1f81feb594dfea9e6e21f4c64d81b18292cf3423be01ddeb85a483aef484958ad5b94f5c2dad",
+            "id": "component-AppComponent-d5b8ce4220687c3577235a571f8374a6a06937139b0d9a0d370911ec465bd143b1563af9ba80e57f65774f1c7fa7b36ac322ba0ca318ccbf7804b81439e6fe81",
             "file": "src/app/app.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -134,6 +152,16 @@
             "outputsClass": [],
             "propertiesClass": [
                 {
+                    "name": "error$",
+                    "defaultValue": "this.store.select(selectError)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 17
+                },
+                {
                     "name": "store",
                     "defaultValue": "inject(Store)",
                     "deprecated": false,
@@ -151,7 +179,7 @@
                     "type": "Task[]",
                     "optional": false,
                     "description": "",
-                    "line": 20
+                    "line": 21
                 },
                 {
                     "name": "tasks$",
@@ -171,20 +199,10 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 19
+                    "line": 20
                 }
             ],
             "methodsClass": [
-                {
-                    "name": "archive",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 25,
-                    "deprecated": false,
-                    "deprecationMessage": ""
-                },
                 {
                     "name": "archiveTask",
                     "args": [
@@ -198,7 +216,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 33,
+                    "line": 34,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nComponent method to trigger the archiveTask event\n",
@@ -216,6 +234,16 @@
                     ]
                 },
                 {
+                    "name": "error",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 26,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
                     "name": "pinTask",
                     "args": [
                         {
@@ -228,7 +256,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 40,
+                    "line": 41,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nComponent method to trigger the pinTask event\n",
@@ -255,7 +283,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, inject } from '@angular/core';\nimport { Task } from './models/task';\nimport { Store } from '@ngrx/store';\nimport { TasksActions } from './reducers/actions/tasks.actions';\nimport { selectTasks } from './reducers/selectors/task.selectors';\nimport { AppState } from './reducers';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.css'],\n})\nexport class AppComponent {\n\n  store = inject(Store);\n  tasks$ = this.store.select(selectTasks);\n  \n  \n  title = 'taskbox';\n  tasks: Task[] = [\n    { state: 'TASK_INBOX', id: '1', title: 'Michael Jackson tour' },\n    { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },\n  ]\n\n  archive() {\n    this.store.dispatch(TasksActions.archiveTask({ id: '1' }));\n  }\n\n\n  /**\n   * Component method to trigger the archiveTask event\n   */\n  archiveTask(id: string) {\n    this.store.dispatch(TasksActions.archiveTask({ id }));\n  }\n\n  /**\n   * Component method to trigger the pinTask event\n   */\n  pinTask(id: string) {\n    this.store.dispatch(TasksActions.pinTask({ id }));\n  }\n\n}\n",
+            "sourceCode": "import { Component, inject } from '@angular/core';\nimport { Task } from './models/task';\nimport { Store } from '@ngrx/store';\nimport { TasksActions } from './reducers/actions/tasks.actions';\nimport { selectError, selectTasks } from './reducers/selectors/task.selectors';\nimport { AppState } from './reducers';\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.css'],\n})\nexport class AppComponent {\n\n  store = inject(Store);\n  tasks$ = this.store.select(selectTasks);\n  error$ = this.store.select(selectError);\n  \n  \n  title = 'taskbox';\n  tasks: Task[] = [\n    { state: 'TASK_INBOX', id: '1', title: 'Michael Jackson tour' },\n    { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },\n  ]\n\n  error() {\n    this.store.dispatch(TasksActions.setError({ error: true }));\n  }\n\n\n  /**\n   * Component method to trigger the archiveTask event\n   */\n  archiveTask(id: string) {\n    this.store.dispatch(TasksActions.archiveTask({ id }));\n  }\n\n  /**\n   * Component method to trigger the pinTask event\n   */\n  pinTask(id: string) {\n    this.store.dispatch(TasksActions.pinTask({ id }));\n  }\n\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -265,7 +293,7 @@
             ],
             "stylesData": "",
             "extends": [],
-            "templateData": "<h1>{{title}}</h1>\r\n<app-task-list (onArchiveTask)=\"archiveTask($event)\" (onPinTask)=\"pinTask($event)\" [tasks]=\"tasks$ | async\"></app-task-list>\r\n<button (click)=\"archive()\">archive</button>"
+            "templateData": "<app-inbox-screen [error]=\"error$ | async\"></app-inbox-screen>\r\n<button (click)=\"error()\">archive</button>"
         },
         {
             "name": "ButtonComponent",
@@ -478,6 +506,132 @@
             "extends": []
         },
         {
+            "name": "InboxScreenComponent",
+            "id": "component-InboxScreenComponent-1b673c3ecf8d54782e7c45e433d8c89b8c9cd3d338d61382b4104e5fd69f8104c8546a96b154797efce40d2f319e2cc7b6cd3b8058b267116b43d5d738ae1aae",
+            "file": "src/app/components/inbox-screen.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-inbox-screen",
+            "styleUrls": [],
+            "styles": [],
+            "template": "<div *ngIf=\"error\" class=\"page lists-show\">\n  <div class=\"wrapper-message\">\n    <span class=\"icon-face-sad\"></span>\n    <p class=\"title-message\">Oh no!</p>\n    <p class=\"subtitle-message\">Something went wrong</p>\n  </div>\n</div>\n\n<div *ngIf=\"!error\" class=\"page lists-show\">\n  <nav>\n    <h1 class=\"title-page\">Taskbox</h1>\n  </nav>\n  <app-task-list (onArchiveTask)=\"archiveTask($event)\" (onPinTask)=\"pinTask($event)\" [tasks]=\"tasks$ | async\"></app-task-list>\n</div>\n",
+            "templateUrl": [],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [
+                {
+                    "name": "error",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 30,
+                    "type": "any",
+                    "decorators": []
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "store",
+                    "defaultValue": "inject(Store)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 27
+                },
+                {
+                    "name": "tasks$",
+                    "defaultValue": "this.store.select(selectTasks)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 28
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "archiveTask",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 35,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nComponent method to trigger the archiveTask event\n",
+                    "description": "<p>Component method to trigger the archiveTask event</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "pinTask",
+                    "args": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 42,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\n\nComponent method to trigger the pinTask event\n",
+                    "description": "<p>Component method to trigger the pinTask event</p>\n",
+                    "jsdoctags": [
+                        {
+                            "name": "id",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component, Input, inject } from \"@angular/core\";\r\nimport { Store } from \"@ngrx/store\";\r\nimport { selectTasks } from \"../reducers/selectors/task.selectors\";\r\nimport { TasksActions } from \"../reducers/actions/tasks.actions\";\r\n\r\n@Component({\r\n    selector: 'app-inbox-screen', \r\n    template: `\r\n      <div *ngIf=\"error\" class=\"page lists-show\">\r\n        <div class=\"wrapper-message\">\r\n          <span class=\"icon-face-sad\"></span>\r\n          <p class=\"title-message\">Oh no!</p>\r\n          <p class=\"subtitle-message\">Something went wrong</p>\r\n        </div>\r\n      </div>\r\n  \r\n      <div *ngIf=\"!error\" class=\"page lists-show\">\r\n        <nav>\r\n          <h1 class=\"title-page\">Taskbox</h1>\r\n        </nav>\r\n        <app-task-list (onArchiveTask)=\"archiveTask($event)\" (onPinTask)=\"pinTask($event)\" [tasks]=\"tasks$ | async\"></app-task-list>\r\n      </div>\r\n    `,\r\n  })\r\n  export default class InboxScreenComponent {\r\n\r\n    store = inject(Store);\r\n    tasks$ = this.store.select(selectTasks);\r\n\r\n    @Input() error: any;\r\n\r\n      /**\r\n   * Component method to trigger the archiveTask event\r\n   */\r\n  archiveTask(id: string) {\r\n    this.store.dispatch(TasksActions.archiveTask({ id }));\r\n  }\r\n\r\n  /**\r\n   * Component method to trigger the pinTask event\r\n   */\r\n  pinTask(id: string) {\r\n    this.store.dispatch(TasksActions.pinTask({ id }));\r\n  }\r\n  }",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": []
+        },
+        {
             "name": "PageComponent",
             "id": "component-PageComponent-f5d2fd9ba0ee70c24f514ef21ebdae50beb2e2f42594802a96cdbeb02a59371897162b6be17fcb45cdc0d237d3e4bee611d1ad1d446a54e0699ba35b48991b87",
             "file": "src/stories/page.component.ts",
@@ -626,7 +780,7 @@
         },
         {
             "name": "TaskListComponent",
-            "id": "component-TaskListComponent-5212cd0a0b195ae8c969ba4b13195ab25c4da17a63c7ec008a0d3435e2d20f9cc6e885ac2338cacd9ca794c34704d97b2fcdc672bb19c0694ad5e59b275cbf91",
+            "id": "component-TaskListComponent-d1d8cba83c3bd189ee748402adf5a1442583805fcc22d9c4862c0eab108a2be17058e934cb2d6999b3359299b4570a0a263a3dde1a2b89310484fa48e2d73b09",
             "file": "src/app/components/task-list.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -648,7 +802,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\nChecks if it's in loading state",
                     "description": "<p>Checks if it&#39;s in loading state</p>\n",
-                    "line": 58,
+                    "line": 59,
                     "type": "boolean",
                     "decorators": []
                 },
@@ -669,7 +823,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\nEvent to change the task to archived",
                     "description": "<p>Event to change the task to archived</p>\n",
-                    "line": 68,
+                    "line": 69,
                     "type": "EventEmitter"
                 },
                 {
@@ -679,7 +833,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\nEvent to change the task to pinned",
                     "description": "<p>Event to change the task to pinned</p>\n",
-                    "line": 63,
+                    "line": 64,
                     "type": "EventEmitter"
                 }
             ],
@@ -694,7 +848,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\n\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task-list',\r\n  template: `\r\n   <div class=\"list-items\">\r\n     <app-task\r\n       *ngFor=\"let task of tasksInOrder\"\r\n       [task]=\"task\"\r\n       (onArchiveTask)=\"onArchiveTask.emit($event)\"\r\n       (onPinTask)=\"onPinTask.emit($event)\"\r\n     >\r\n     </app-task>\r\n     <div\r\n       *ngIf=\"tasksInOrder.length === 0 && !loading\"\r\n       class=\"wrapper-message\"\r\n     >\r\n       <span class=\"icon-check\"></span>\r\n       <p class=\"title-message\">You have no tasks</p>\r\n       <p class=\"subtitle-message\">Sit back and relax</p>\r\n     </div>\r\n     <div *ngIf=\"loading\">\r\n       <div *ngFor=\"let i of [1, 2, 3, 4, 5, 6]\" class=\"loading-item\">\r\n         <span class=\"glow-checkbox\"></span>\r\n         <span class=\"glow-text\">\r\n           <span>Loading</span> <span>cool</span> <span>state</span>\r\n         </span>\r\n       </div>\r\n     </div>\r\n   </div>\r\n  `,\r\n})\r\nexport default class TaskListComponent {\r\n  /**\r\n  * @ignore\r\n  * Component property to define ordering of tasks\r\n  */\r\n tasksInOrder: Task[] = [];\r\n\r\n @Input()\r\n set tasks(arr: Task[]) {\r\n   const initialTasks = [\r\n     ...arr.filter(t => t.state === 'TASK_PINNED'),\r\n     ...arr.filter(t => t.state !== 'TASK_PINNED'),\r\n   ];\r\n   const filteredTasks = initialTasks.filter(\r\n     t => t.state === 'TASK_INBOX' || t.state === 'TASK_PINNED'\r\n   );\r\n   this.tasksInOrder = filteredTasks.filter(\r\n     t => t.state === 'TASK_INBOX' || t.state === 'TASK_PINNED'\r\n   );\r\n }\r\n\r\n  /** Checks if it's in loading state */\r\n  @Input() loading = false;\r\n\r\n  /** Event to change the task to pinned */\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  /** Event to change the task to archived */\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n}",
+            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\n\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task-list',\r\n  template: `\r\n   <div class=\"list-items\">\r\n     <app-task\r\n       *ngFor=\"let task of tasksInOrder\"\r\n       [task]=\"task\"\r\n       (onArchiveTask)=\"onArchiveTask.emit($event)\"\r\n       (onPinTask)=\"onPinTask.emit($event)\"\r\n     >\r\n     </app-task>\r\n     <div\r\n       *ngIf=\"tasksInOrder.length === 0 && !loading\"\r\n       class=\"wrapper-message\"\r\n     >\r\n       <span class=\"icon-check\"></span>\r\n       <p class=\"title-message\">You have no tasks</p>\r\n       <p class=\"subtitle-message\">Sit back and relax</p>\r\n     </div>\r\n     <div *ngIf=\"loading\">\r\n       <div *ngFor=\"let i of [1, 2, 3, 4, 5, 6]\" class=\"loading-item\">\r\n         <span class=\"glow-checkbox\"></span>\r\n         <span class=\"glow-text\">\r\n           <span>Loading</span> <span>cool</span> <span>state</span>\r\n         </span>\r\n       </div>\r\n     </div>\r\n   </div>\r\n  `,\r\n})\r\nexport default class TaskListComponent {\r\n  /**\r\n  * @ignore\r\n  * Component property to define ordering of tasks\r\n  */\r\n tasksInOrder: Task[] = [];\r\n\r\n @Input()\r\n set tasks(arr: Task[]) {\r\n  this.tasksInOrder = [...arr].sort((a, b) => b.state.localeCompare(a.state));\r\n   /* const initialTasks = [\r\n     ...arr.filter(t => t.state === 'TASK_PINNED'),\r\n     ...arr.filter(t => t.state !== 'TASK_PINNED'),\r\n   ];\r\n   const filteredTasks = initialTasks.filter(\r\n     t => t.state === 'TASK_INBOX' || t.state === 'TASK_PINNED'\r\n   );\r\n   this.tasksInOrder = filteredTasks.filter(\r\n     t => t.state === 'TASK_INBOX' || t.state === 'TASK_PINNED'\r\n   ); */\r\n }\r\n\r\n  /** Checks if it's in loading state */\r\n  @Input() loading = false;\r\n\r\n  /** Event to change the task to pinned */\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  /** Event to change the task to archived */\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n}",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": "",
@@ -736,13 +890,13 @@
     "modules": [
         {
             "name": "AppModule",
-            "id": "module-AppModule-1daf9ac6219d2700166e82bc82a670874531b9f9cb07e8657b7ca7990bb730d40fac9ad53c4ebb7d17dd1d124ca9d4f84d40321cf9d1adb92efafce54da1abce",
+            "id": "module-AppModule-560f96fa1a18f0c3c93c9ab455e2e2b88f3115af9b87725b15e9f63a9417038a065de20963e3ecb3b87691fcb58f17fdb987cb721f262378abc3c7e0511302a1",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/app.module.ts",
             "methods": [],
-            "sourceCode": "import { NgModule, isDevMode } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport TaskComponent from './components/task.component';\nimport TaskListComponent from './components/task-list.component';\nimport { StoreModule } from '@ngrx/store';\nimport { reducers, metaReducers } from './reducers';\nimport { StoreDevtoolsModule } from '@ngrx/store-devtools';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TaskComponent,\n    TaskListComponent\n  ],\n  imports: [\n    BrowserModule,\n    StoreModule.forRoot(reducers, { metaReducers }),\n    StoreDevtoolsModule.instrument({\n      maxAge: 25,\n      logOnly: isDevMode()\n    })\n  ],\n  providers: [],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
+            "sourceCode": "import { NgModule, isDevMode } from '@angular/core';\nimport { BrowserModule } from '@angular/platform-browser';\n\nimport { AppComponent } from './app.component';\nimport TaskComponent from './components/task.component';\nimport TaskListComponent from './components/task-list.component';\nimport { StoreModule } from '@ngrx/store';\nimport { reducers, metaReducers } from './reducers';\nimport { StoreDevtoolsModule } from '@ngrx/store-devtools';\nimport InboxScreenComponent from './components/inbox-screen';\n\n@NgModule({\n  declarations: [\n    AppComponent,\n    TaskComponent,\n    TaskListComponent,\n    InboxScreenComponent\n  ],\n  imports: [\n    BrowserModule,\n    StoreModule.forRoot(reducers, { metaReducers }),\n    StoreDevtoolsModule.instrument({\n      maxAge: 25,\n      logOnly: isDevMode()\n    })\n  ],\n  providers: [],\n  bootstrap: [AppComponent]\n})\nexport class AppModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -753,6 +907,9 @@
                     "elements": [
                         {
                             "name": "AppComponent"
+                        },
+                        {
+                            "name": "InboxScreenComponent"
                         },
                         {
                             "name": "TaskComponent"
@@ -811,11 +968,21 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/app/components/inbox-screen.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "{\r\n  args: {\r\n    error: false,\r\n  },\r\n}"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/app/components/task-list.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
-                "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' }\r\n    ],\r\n  },\r\n}"
+                "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' },\r\n      { id: '2', title: 'Task 2', state: 'TASK_INBOX' },\r\n      { id: '3', title: 'Task 3', state: 'TASK_INBOX' },\r\n      { id: '4', title: 'Task 4', state: 'TASK_INBOX' },\r\n      { id: '5', title: 'Task 5', state: 'TASK_INBOX' },\r\n      { id: '6', title: 'Task 6', state: 'TASK_INBOX' },\r\n    ],\r\n  },\r\n}"
             },
             {
                 "name": "Default",
@@ -865,7 +1032,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "TaskState",
-                "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n}"
+                "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n  status: 'idle',\n  error: false\n}"
             },
             {
                 "name": "Large",
@@ -961,6 +1128,16 @@
                 "name": "meta",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/app/components/inbox-screen.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Meta<InboxScreenComponent>",
+                "defaultValue": "{\r\n  component: InboxScreenComponent,\r\n  title: 'InboxScreen',\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [InboxScreenComponent, TaskListComponent, TaskComponent],\r\n      imports: [CommonModule],\r\n    }),\r\n    //👇 Wraps our stories with a decorator\r\n    componentWrapperDecorator(\r\n      (story) => `<div style=\"margin: 3em\">${story}</div>`\r\n    ),\r\n    applicationConfig({\r\n        providers: [\r\n            Store, importProvidersFrom(StoreModule.forRoot({})),\r\n        ]\r\n    })\r\n  ],\r\n}"
+            },
+            {
+                "name": "meta",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/app/components/task-list.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -1038,6 +1215,16 @@
                 "defaultValue": "{\n  args: {\n    label: 'Button',\n  },\n}"
             },
             {
+                "name": "selectError",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/reducers/selectors/task.selectors.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "createSelector(\n  selectTaskState,\n  (state: TaskState) => state.error\n)"
+            },
+            {
                 "name": "selectTasks",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -1075,7 +1262,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
-                "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n)"
+                "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  })),\n  on(TasksActions.setError, (state, { error }) => ({ ...state, error }))\n)"
             },
             {
                 "name": "TasksActions",
@@ -1085,7 +1272,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
-                "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>()\n  }\n})"
+                "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>(),\n    'Set Error': props<{ error: boolean }>(),\n  }\n})"
             },
             {
                 "name": "tasksFeatureKey",
@@ -1189,6 +1376,17 @@
                 "name": "Story",
                 "ctype": "miscellaneous",
                 "subtype": "typealias",
+                "rawtype": "StoryObj<InboxScreenComponent>",
+                "file": "src/app/components/inbox-screen.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 183
+            },
+            {
+                "name": "Story",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
                 "rawtype": "StoryObj<TaskListComponent>",
                 "file": "src/app/components/task-list.stories.ts",
                 "deprecated": false,
@@ -1262,6 +1460,28 @@
                     "defaultValue": "{\r\n  args: {\r\n    task: { id: '1', title: 'Test Task', state: 'TASK_PINNED' },\r\n  },\r\n}"
                 }
             ],
+            "src/app/components/inbox-screen.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/inbox-screen.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "{\r\n  args: {\r\n    error: false,\r\n  },\r\n}"
+                },
+                {
+                    "name": "meta",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/inbox-screen.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Meta<InboxScreenComponent>",
+                    "defaultValue": "{\r\n  component: InboxScreenComponent,\r\n  title: 'InboxScreen',\r\n  decorators: [\r\n    moduleMetadata({\r\n      declarations: [InboxScreenComponent, TaskListComponent, TaskComponent],\r\n      imports: [CommonModule],\r\n    }),\r\n    //👇 Wraps our stories with a decorator\r\n    componentWrapperDecorator(\r\n      (story) => `<div style=\"margin: 3em\">${story}</div>`\r\n    ),\r\n    applicationConfig({\r\n        providers: [\r\n            Store, importProvidersFrom(StoreModule.forRoot({})),\r\n        ]\r\n    })\r\n  ],\r\n}"
+                }
+            ],
             "src/app/components/task-list.stories.ts": [
                 {
                     "name": "Default",
@@ -1271,7 +1491,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
-                    "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' }\r\n    ],\r\n  },\r\n}"
+                    "defaultValue": "{\r\n  args: {\r\n    tasks: [\r\n      { id: '1', title: 'Task 1', state: 'TASK_INBOX' },\r\n      { id: '2', title: 'Task 2', state: 'TASK_INBOX' },\r\n      { id: '3', title: 'Task 3', state: 'TASK_INBOX' },\r\n      { id: '4', title: 'Task 4', state: 'TASK_INBOX' },\r\n      { id: '5', title: 'Task 5', state: 'TASK_INBOX' },\r\n      { id: '6', title: 'Task 6', state: 'TASK_INBOX' },\r\n    ],\r\n  },\r\n}"
                 },
                 {
                     "name": "Empty",
@@ -1347,7 +1567,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "TaskState",
-                    "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n}"
+                    "defaultValue": "{\n  taskList: [\n    { id: '1', title: 'Something', state: 'TASK_INBOX' },\n    { id: '2', title: 'Something more', state: 'TASK_INBOX' },\n    { id: '3', title: 'Something else', state: 'TASK_INBOX' },\n    { id: '4', title: 'Something again', state: 'TASK_INBOX' },\n  ],\n  status: 'idle',\n  error: false\n}"
                 },
                 {
                     "name": "taskReducer",
@@ -1357,7 +1577,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "",
-                    "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  }))\n)"
+                    "defaultValue": "createReducer(\n  initialState,\n  on(TasksActions.archiveTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_ARCHIVED' as const } : task)\n  })),\n  on(TasksActions.pinTask, (state, { id }) => ({\n    ...state, taskList: state.taskList.map((task) => task.id === id ? { ...task, state: 'TASK_PINNED' as const } : task)\n  })),\n  on(TasksActions.setError, (state, { error }) => ({ ...state, error }))\n)"
                 },
                 {
                     "name": "tasksFeatureKey",
@@ -1522,6 +1742,16 @@
             ],
             "src/app/reducers/selectors/task.selectors.ts": [
                 {
+                    "name": "selectError",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/reducers/selectors/task.selectors.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "createSelector(\n  selectTaskState,\n  (state: TaskState) => state.error\n)"
+                },
+                {
                     "name": "selectTasks",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
@@ -1551,7 +1781,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "",
-                    "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>()\n  }\n})"
+                    "defaultValue": "createActionGroup({\n  source: 'Tasks',\n  events: {\n    'Archive Task': props<{ id: string }>(),\n    'Pin Task': props<{ id: string }>(),\n    'Set Error': props<{ error: boolean }>(),\n  }\n})"
                 }
             ]
         },
@@ -1641,6 +1871,19 @@
                     "kind": 183
                 }
             ],
+            "src/app/components/inbox-screen.stories.ts": [
+                {
+                    "name": "Story",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "StoryObj<InboxScreenComponent>",
+                    "file": "src/app/components/inbox-screen.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 183
+                }
+            ],
             "src/app/components/task-list.stories.ts": [
                 {
                     "name": "Story",
@@ -1689,9 +1932,38 @@
                 "type": "component",
                 "linktype": "component",
                 "name": "AppComponent",
-                "coveragePercent": 25,
-                "coverageCount": "2/8",
+                "coveragePercent": 22,
+                "coverageCount": "2/9",
                 "status": "low"
+            },
+            {
+                "filePath": "src/app/components/inbox-screen.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/inbox-screen.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "meta",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/inbox-screen.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "InboxScreenComponent",
+                "coveragePercent": 33,
+                "coverageCount": "2/6",
+                "status": "medium"
             },
             {
                 "filePath": "src/app/components/task-list.component.ts",
@@ -1864,6 +2136,16 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
+                "name": "selectError",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/reducers/selectors/task.selectors.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
                 "name": "selectTasks",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
@@ -1885,7 +2167,7 @@
                 "linktype": "interface",
                 "name": "TaskState",
                 "coveragePercent": 0,
-                "coverageCount": "0/2",
+                "coverageCount": "0/4",
                 "status": "low"
             },
             {

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Task } from './models/task';
 import { Store } from '@ngrx/store';
 import { TasksActions } from './reducers/actions/tasks.actions';
-import { selectTasks } from './reducers/selectors/task.selectors';
+import { selectError, selectTasks } from './reducers/selectors/task.selectors';
 import { AppState } from './reducers';
 
 @Component({
@@ -14,6 +14,7 @@ export class AppComponent {
 
   store = inject(Store);
   tasks$ = this.store.select(selectTasks);
+  error$ = this.store.select(selectError);
   
   
   title = 'taskbox';
@@ -22,8 +23,8 @@ export class AppComponent {
     { state: 'TASK_PINNED', id: '2', title: 'Notre Dame visit' },
   ]
 
-  archive() {
-    this.store.dispatch(TasksActions.archiveTask({ id: '1' }));
+  error() {
+    this.store.dispatch(TasksActions.setError({ error: true }));
   }
 
 
