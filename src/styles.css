@@ -301,7 +301,7 @@ textarea {
 .pin-button {
   width: 3rem;
   height: 3rem;
-  background: yellowgreen;
+  background: rgb(205, 50, 104);
   border: none;
   text-align: center;
   transition: all 200ms ease-in;
