@@ -717,7 +717,7 @@
         },
         {
             "name": "TaskComponent",
-            "id": "component-TaskComponent-b033da4510a39d8d0effe8c96df18d917bd48df9a807fa5fa7d50f24be395d8b7c6ad44d0eb9c56bc951d75ede56ebfd3a40a778d3495e1211914d83867e3700",
+            "id": "component-TaskComponent-cf0634c8ebfb52810218f3a8b35cd7c67034371767cda9edb414382f3e3ed82e53baf2156f7ed54b0906aa8c6f3fb9aef396a3393665338255848e5ddb58b8d5",
             "file": "src/app/components/task.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -726,7 +726,9 @@
             "providers": [],
             "selector": "app-task",
             "styleUrls": [],
-            "styles": [],
+            "styles": [
+                "\n  .title > input {\n    text-overflow: ellipsis;\n  }\n  "
+            ],
             "template": "<div class=\"list-item {{ task?.state }}\">\n  <label\n    [attr.aria-label]=\"'archiveTask-' + task?.id\"\n    for=\"checked-{{ task?.id }}\"\n    class=\"checkbox\"\n  >\n    <input\n      type=\"checkbox\"\n      disabled=\"true\"\n      [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\n      name=\"checked-{{ task?.id }}\"\n      id=\"checked-{{ task?.id }}\"\n    />\n    <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\n  </label>\n  <label\n    [attr.aria-label]=\"task?.title + ''\"\n    for=\"title-{{ task?.id }}\"\n    class=\"title\"\n  >\n    <input\n      type=\"text\"\n      [value]=\"task?.title\"\n      readonly=\"true\"\n      id=\"title-{{ task?.id }}\"\n      name=\"title-{{ task?.id }}\"\n      placeholder=\"Input title\"\n    />\n  </label>\n  <button\n    *ngIf=\"task?.state !== 'TASK_ARCHIVED'\"\n    class=\"pin-button\"\n    [attr.aria-label]=\"'pinTask-' + task?.id\"\n    (click)=\"onPin(task?.id)\"\n  >\n    <span class=\"icon-star\"></span>\n  </button>\n</div>\n",
             "templateUrl": [],
             "viewProviders": [],
@@ -738,7 +740,7 @@
                     "deprecationMessage": "",
                     "rawdescription": "\n\nThe shape of the task object\n",
                     "description": "<p>The shape of the task object</p>\n",
-                    "line": 52,
+                    "line": 57,
                     "type": "Task",
                     "decorators": []
                 }
@@ -749,7 +751,7 @@
                     "defaultValue": "new EventEmitter<Event>()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 60,
+                    "line": 65,
                     "type": "EventEmitter"
                 },
                 {
@@ -757,7 +759,7 @@
                     "defaultValue": "new EventEmitter<Event>()",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 56,
+                    "line": 61,
                     "type": "EventEmitter"
                 }
             ],
@@ -772,10 +774,10 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task',\r\n  template: `\r\n    <div class=\"list-item {{ task?.state }}\">\r\n      <label\r\n        [attr.aria-label]=\"'archiveTask-' + task?.id\"\r\n        for=\"checked-{{ task?.id }}\"\r\n        class=\"checkbox\"\r\n      >\r\n        <input\r\n          type=\"checkbox\"\r\n          disabled=\"true\"\r\n          [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\r\n          name=\"checked-{{ task?.id }}\"\r\n          id=\"checked-{{ task?.id }}\"\r\n        />\r\n        <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\r\n      </label>\r\n      <label\r\n        [attr.aria-label]=\"task?.title + ''\"\r\n        for=\"title-{{ task?.id }}\"\r\n        class=\"title\"\r\n      >\r\n        <input\r\n          type=\"text\"\r\n          [value]=\"task?.title\"\r\n          readonly=\"true\"\r\n          id=\"title-{{ task?.id }}\"\r\n          name=\"title-{{ task?.id }}\"\r\n          placeholder=\"Input title\"\r\n        />\r\n      </label>\r\n      <button\r\n        *ngIf=\"task?.state !== 'TASK_ARCHIVED'\"\r\n        class=\"pin-button\"\r\n        [attr.aria-label]=\"'pinTask-' + task?.id\"\r\n        (click)=\"onPin(task?.id)\"\r\n      >\r\n        <span class=\"icon-star\"></span>\r\n      </button>\r\n    </div>\r\n  `,\r\n})\r\nexport default class TaskComponent {\r\n  /**\r\n   * The shape of the task object\r\n  */\r\n  @Input() task?: Task;\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onPin event\r\n   * @param id string\r\n   */\r\n  onPin(id: any) {\r\n    this.onPinTask.emit(id);\r\n    console.log('onPinTask', id);\r\n  }\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onArchive event\r\n   * @param id string\r\n   */\r\n  onArchive(id: any) {\r\n    this.onArchiveTask.emit(id);\r\n    console.log('onArchiveTask', id);\r\n  }\r\n}",
+            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\r\nimport { Task } from '../models/task';\r\n\r\n@Component({\r\n  selector: 'app-task',\r\n  styles: [`\r\n  .title > input {\r\n    text-overflow: ellipsis;\r\n  }\r\n  `],\r\n  template: `\r\n    <div class=\"list-item {{ task?.state }}\">\r\n      <label\r\n        [attr.aria-label]=\"'archiveTask-' + task?.id\"\r\n        for=\"checked-{{ task?.id }}\"\r\n        class=\"checkbox\"\r\n      >\r\n        <input\r\n          type=\"checkbox\"\r\n          disabled=\"true\"\r\n          [defaultChecked]=\"task?.state === 'TASK_ARCHIVED'\"\r\n          name=\"checked-{{ task?.id }}\"\r\n          id=\"checked-{{ task?.id }}\"\r\n        />\r\n        <span class=\"checkbox-custom\" (click)=\"onArchive(task?.id)\"></span>\r\n      </label>\r\n      <label\r\n        [attr.aria-label]=\"task?.title + ''\"\r\n        for=\"title-{{ task?.id }}\"\r\n        class=\"title\"\r\n      >\r\n        <input\r\n          type=\"text\"\r\n          [value]=\"task?.title\"\r\n          readonly=\"true\"\r\n          id=\"title-{{ task?.id }}\"\r\n          name=\"title-{{ task?.id }}\"\r\n          placeholder=\"Input title\"\r\n        />\r\n      </label>\r\n      <button\r\n        *ngIf=\"task?.state !== 'TASK_ARCHIVED'\"\r\n        class=\"pin-button\"\r\n        [attr.aria-label]=\"'pinTask-' + task?.id\"\r\n        (click)=\"onPin(task?.id)\"\r\n      >\r\n        <span class=\"icon-star\"></span>\r\n      </button>\r\n    </div>\r\n  `,\r\n})\r\nexport default class TaskComponent {\r\n  /**\r\n   * The shape of the task object\r\n  */\r\n  @Input() task?: Task;\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onPinTask = new EventEmitter<Event>();\r\n\r\n  // tslint:disable-next-line: no-output-on-prefix\r\n  @Output()\r\n  onArchiveTask = new EventEmitter<Event>();\r\n\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onPin event\r\n   * @param id string\r\n   */\r\n  onPin(id: any) {\r\n    this.onPinTask.emit(id);\r\n    console.log('onPinTask', id);\r\n  }\r\n  /**\r\n   * @ignore\r\n   * Component method to trigger the onArchive event\r\n   * @param id string\r\n   */\r\n  onArchive(id: any) {\r\n    this.onArchiveTask.emit(id);\r\n    console.log('onArchiveTask', id);\r\n  }\r\n}",
             "assetsDirs": [],
             "styleUrlsData": "",
-            "stylesData": "",
+            "stylesData": "\n  .title > input {\n    text-overflow: ellipsis;\n  }\n  \n",
             "extends": []
         },
         {
@@ -1103,6 +1105,26 @@
                 "deprecationMessage": "",
                 "type": "Story",
                 "defaultValue": "{\n  render: (args: Page) => ({\n    props: args,\n  }),\n}"
+            },
+            {
+                "name": "LongTitle",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/components/task.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      id: '1',\r\n      title: longTitleString,\r\n      state: 'TASK_INBOX'\r\n    },\r\n  },\r\n}"
+            },
+            {
+                "name": "longTitleString",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/components/task.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "`This task's name is absurdly large. In fact, I think if I keep going I might end up with content overflow. What will happen? The star that represents a pinned task could have text overlapping. The text could cut-off abruptly when it reaches the star. I hope not!`"
             },
             {
                 "name": "meta",
@@ -1458,6 +1480,26 @@
                     "deprecationMessage": "",
                     "type": "Story",
                     "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      id: '1',\r\n      title: 'Test Task',\r\n      state: 'TASK_INBOX',\r\n    },\r\n  },\r\n}"
+                },
+                {
+                    "name": "LongTitle",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/task.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "{\r\n  args: {\r\n    task: {\r\n      id: '1',\r\n      title: longTitleString,\r\n      state: 'TASK_INBOX'\r\n    },\r\n  },\r\n}"
+                },
+                {
+                    "name": "longTitleString",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/components/task.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "`This task's name is absurdly large. In fact, I think if I keep going I might end up with content overflow. What will happen? The star that represents a pinned task could have text overlapping. The text could cut-off abruptly when it reaches the star. I hope not!`"
                 },
                 {
                     "name": "meta",
@@ -2119,6 +2161,26 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/task.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "LongTitle",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/task.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "longTitleString",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"

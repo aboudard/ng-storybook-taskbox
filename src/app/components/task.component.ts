@@ -4,6 +4,11 @@ import { Task } from '../models/task';
 
 @Component({
   selector: 'app-task',
+  styles: [`
+  .title > input {
+    text-overflow: ellipsis;
+  }
+  `],
   template: `
     <div class="list-item {{ task?.state }}">
       <label
